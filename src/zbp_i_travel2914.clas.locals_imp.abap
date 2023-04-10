@@ -376,7 +376,7 @@ CLASS lsc_Z_I_TRAVEL2914 IMPLEMENTATION.
     DATA(lv_user)  =  cl_abap_context_info=>get_user_technical_name(  ).
 
     IF NOT create-travel IS INITIAL.
-      lt_travel_log = CORRESPONDING #( create-travel ).
+      lt_travel_log = CORRESPONDING #( create-travel MAPPING travel_id = TravelId ).
 
       LOOP AT lt_travel_log ASSIGNING FIELD-SYMBOL(<ls_travel_log>).
 *Para obtener el TIMESTAMP
@@ -413,22 +413,22 @@ CLASS lsc_Z_I_TRAVEL2914 IMPLEMENTATION.
       lt_travel_log = CORRESPONDING #( update-travel ).
 
       LOOP AT update-travel INTO DATA(ls_update_travel).
-      ASSIGN lt_travel_log[ travel_id = ls_update_travel-TravelId ] TO FIELD-SYMBOL(<ls_travel_log_bd>).
-        IF SY-SUBRC EQ 0.
+        ASSIGN lt_travel_log[ travel_id = ls_update_travel-TravelId ] TO FIELD-SYMBOL(<ls_travel_log_bd>).
+        IF sy-subrc EQ 0.
 
-        get TIME STAMP FIELD <ls_travel_log_bd>-created_at.
-        <ls_travel_log>-changing_operation = lsc_Z_I_TRAVEL2914=>update.
-        IF ls_update_travel-%control-CustomerId EQ cl_abap_behv=>flag_changed.
-          <ls_travel_log_bd>-changed_field_name     = 'customer_id'.
-          <ls_travel_log_bd>-changed_value          = ls_update_travel-CustomerId.
-          <ls_travel_log_bd>-changed_value          = ls_update_travel-BookingFee.
-          <ls_travel_log_bd>-user_mod               = lv_user .
-          TRY.
-              <ls_travel_log_bd>-change_id        = cl_system_uuid=>create_uuid_x16_static(  ).
-            CATCH cx_uuid_error.
-          ENDTRY.
-          APPEND <ls_travel_log_bd> TO lt_travel_log_u.
-        ENDIF.
+          GET TIME STAMP FIELD <ls_travel_log_bd>-created_at.
+          <ls_travel_log>-changing_operation = lsc_Z_I_TRAVEL2914=>update.
+          IF ls_update_travel-%control-CustomerId EQ cl_abap_behv=>flag_changed.
+            <ls_travel_log_bd>-changed_field_name     = 'customer_id'.
+            <ls_travel_log_bd>-changed_value          = ls_update_travel-CustomerId.
+            <ls_travel_log_bd>-changed_value          = ls_update_travel-BookingFee.
+            <ls_travel_log_bd>-user_mod               = lv_user .
+            TRY.
+                <ls_travel_log_bd>-change_id        = cl_system_uuid=>create_uuid_x16_static(  ).
+              CATCH cx_uuid_error.
+            ENDTRY.
+            APPEND <ls_travel_log_bd> TO lt_travel_log_u.
+          ENDIF.
         ENDIF.
       ENDLOOP.
     ENDIF.
@@ -449,7 +449,7 @@ CLASS lsc_Z_I_TRAVEL2914 IMPLEMENTATION.
     ENDIF.
 
     IF NOT lt_travel_log_u IS INITIAL.
-    INSERT zlog_2914 FROM TABLE @lt_travel_log_u.
+      INSERT zlog_2914 FROM TABLE @lt_travel_log_u.
     ENDIF.
 
   ENDMETHOD.

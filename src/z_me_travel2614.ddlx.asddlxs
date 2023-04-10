@@ -1,13 +1,13 @@
 @Metadata.layer: #CORE
 @Search.searchable: true
-@UI.headerInfo: {
-    typeName: 'Travel',
+@UI:{ headerInfo:  { typeName: 'Travel',
     typeNamePlural: 'Travels',
     title: {
         type: #STANDARD,
         value: 'TravelID'
     }
-}
+} }
+
 annotate entity Z_C_TRAVEL2914 with 
 {
 @UI.facet: [{ id: 'Travel',
