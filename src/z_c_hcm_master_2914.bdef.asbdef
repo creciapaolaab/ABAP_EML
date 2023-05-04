@@ -1,5 +1,5 @@
 projection;
-strict ( 1 );
+
 
 define behavior for Z_C_HCM_MASTER_2914  alias HCMMaster
 {
